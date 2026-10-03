@@ -37,6 +37,63 @@ public class ProdutosDAO {
             }
         }
     }
+    
+public boolean venderProduto(int id) {
+    conn = new conectaDAO().connectDB();
+
+    try {
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        prep = conn.prepareStatement(sql);
+        prep.setInt(1, id);
+
+        prep.execute();
+        return true;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (prep != null) prep.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+    conn = new conectaDAO().connectDB();
+    listagem.clear();
+
+    try {
+        String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = 'Vendido'";
+        prep = conn.prepareStatement(sql);
+        resultset = prep.executeQuery();
+
+        while (resultset.next()) {
+            ProdutosDTO prod = new ProdutosDTO();
+            prod.setId(resultset.getInt("id"));
+            prod.setNome(resultset.getString("nome"));
+            prod.setValor(resultset.getInt("valor"));
+            prod.setStatus(resultset.getString("status"));
+            listagem.add(prod);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (resultset != null) resultset.close();
+            if (prep != null) prep.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    return listagem;
+}
 
     public ArrayList<ProdutosDTO> listarProdutos() {
         conn = new conectaDAO().connectDB();
@@ -71,3 +128,4 @@ public class ProdutosDAO {
         return listagem;
     }
 }
+

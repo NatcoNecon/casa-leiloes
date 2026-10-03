@@ -1,12 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
+import javax.swing.JOptionPane;
 public class cadastroVIEW extends javax.swing.JFrame {
 
     /**
@@ -140,17 +132,48 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_cadastroNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
         String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
-        
-        ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
-        
+    String valorTexto = cadastroValor.getText();
+
+    // Validação simples
+    if (nome == null || nome.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe o nome do produto.");
+        return;
+    }
+
+    if (valorTexto == null || valorTexto.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe o valor do produto.");
+        return;
+    }
+
+    int valor;
+    try {
+        valor = Integer.parseInt(valorTexto);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Valor inválido. Digite apenas números.");
+        return;
+    }
+
+    String status = "A Venda";
+
+    ProdutosDTO produto = new ProdutosDTO();
+    produto.setNome(nome);
+    produto.setValor(valor);
+    produto.setStatus(status);
+
+    ProdutosDAO produtodao = new ProdutosDAO();
+    boolean ok = produtodao.cadastrarProduto(produto);
+
+    if (ok) {
+        JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!");
+        // Opcional: limpar campos
+        cadastroNome.setText("");
+        cadastroValor.setText("");
+        cadastroNome.requestFocus();
+    } else {
+        JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto.");
+    }
+
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed

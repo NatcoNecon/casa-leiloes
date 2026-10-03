@@ -37,6 +37,30 @@ public class ProdutosDAO {
             }
         }
     }
+    
+public boolean venderProduto(int id) {
+    conn = new conectaDAO().connectDB();
+
+    try {
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        prep = conn.prepareStatement(sql);
+        prep.setInt(1, id);
+
+        prep.execute();
+        return true;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (prep != null) prep.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
 
     public ArrayList<ProdutosDTO> listarProdutos() {
         conn = new conectaDAO().connectDB();
@@ -71,3 +95,4 @@ public class ProdutosDAO {
         return listagem;
     }
 }
+
